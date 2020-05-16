@@ -89,6 +89,8 @@ class ValueObjectTransformer implements DataTransformerInterface
             return $this->propertyAccessor->getValue($object, $form->getPropertyPath());
         }
 
-        return $this->propertyAccessor->getValue($object, new PropertyPath($form->getName()));
+        $propertyPath = $form->getOption('factory_argument') ?: $form->getName();
+
+        return $this->propertyAccessor->getValue($object, new PropertyPath($propertyPath));
     }
 }
