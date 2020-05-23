@@ -110,16 +110,7 @@ final class DataMapper implements DataMapperInterface
 
             try {
                 if ($forwardToWrappedDataMapper) {
-                    $customPropertyPath = $form->getConfig()->getOption('factory_argument');
-                    $immutableParent = false;
-                    if (null !== $form->getParent()) {
-                        $immutableParent = $form->getParent()->getConfig()->getOption('immutable');
-                    }
-                    if (true === $immutableParent && null !== $customPropertyPath) {
-                        $data[$customPropertyPath] = $form->getData();
-                    } else {
-                        $this->dataMapper->mapFormsToData([$form], $data);
-                    }
+                    $this->dataMapper->mapFormsToData([$form], $data);
                 } elseif ($writePropertyPath instanceof \Closure) {
                     $writePropertyPath($data, $form->getData());
                 } elseif ($propertyMapper instanceof PropertyMapperInterface) {
