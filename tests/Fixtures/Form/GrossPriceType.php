@@ -33,11 +33,12 @@ class GrossPriceType extends AbstractType
 
         $builder
             ->add('amount', IntegerType::class)
-            ->add('taxRate', ChoiceType::class, [
+            ->add($options['tax_field']['name'], ChoiceType::class, [
                 'choices' => [
                     '7%' => 7,
                     '19%' => 19,
                 ],
+                'factory_argument' => $options['tax_field']['factory_argument'],
             ])
         ;
 
@@ -58,5 +59,6 @@ class GrossPriceType extends AbstractType
         $resolver->setDefault('extra_field', false);
         $resolver->setDefault('include_button', false);
         $resolver->setDefault('map_extra_field', false);
+        $resolver->setDefault('tax_field', ['name' => 'taxRate', 'factory_argument' => null]);
     }
 }

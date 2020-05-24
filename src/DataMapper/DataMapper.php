@@ -58,6 +58,8 @@ final class DataMapper implements DataMapperInterface
                 $form->setData($propertyMapper->readPropertyValue($data));
             } elseif (null !== $readPropertyPath) {
                 $form->setData($form->getConfig()->getData());
+            } elseif (null !== $form->getConfig()->getOption('factory_argument')) {
+                $form->setData($data[$form->getName()] ?? null);
             } else {
                 $formsToBeMapped[] = $form;
             }
@@ -108,7 +110,16 @@ final class DataMapper implements DataMapperInterface
 
             try {
                 if ($forwardToWrappedDataMapper) {
-                    $this->dataMapper->mapFormsToData([$form], $data);
+                    $customPropertyPath = $form->getConfig()->getOption('factory_argument');
+                    $immutableParent = false;
+                    if (null !== $form->getParent()) {
+                        $immutableParent = $form->getParent()->getConfig()->getOption('immutable');
+                    }
+                    if (true === $immutableParent && null !== $customPropertyPath) {
+                        $data[$customPropertyPath] = $form->getData();
+                    } else {
+                        $this->dataMapper->mapFormsToData([$form], $data);
+                    }
                 } elseif ($writePropertyPath instanceof \Closure) {
                     $writePropertyPath($data, $form->getData());
                 } elseif ($propertyMapper instanceof PropertyMapperInterface) {
